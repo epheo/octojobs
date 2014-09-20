@@ -1,7 +1,6 @@
 import tweepy
 import sys
 from textwrap import TextWrapper
-from textblob import TextBlob
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import json
@@ -17,30 +16,28 @@ access_token_secret="3E2JojFK3QCtEuWFm8FTNlSbUR8DU1JXh37DQ0p7Ic82E"
 es = Elasticsearch()
 
 class StreamListener(tweepy.StreamListener):
-    status_wrapper = TextWrapper(width=60, initial_indent='    ', subsequent_indent='    ')
 
-    def on_data(self, data):
-        # Twitter returns data in JSON format - we need to decode it first
-        decoded = json.loads(data)
-    
-        # Also, we convert UTF-8 to ASCII ignoring all bad characters sent by users
-        print '@%s: %s' % (decoded['user']['screen_name'],
-        decoded['text'].encode('ascii', 'ignore'))
-        print ''
-        return True
+#    def on_data(self, data):
+#        # Twitter returns data in JSON format - we need to decode it first
+#        decoded = json.loads(data)
+#        print decoded 
+#        # Also, we convert UTF-8 to ASCII ignoring all bad characters sent by users
+#        print '@%s: %s' % (decoded['user']['screen_name'],
+#        decoded['text'].encode('ascii', 'ignore'))
+#        print ''
+#        return True
 
+    def on_status(self, status):
+        self.push_in_es(status.text)
 
-    def push_in_es(self, input_tweet):
-            tweet = TextBlob(input_tweet)
-            print str(tweet)
+    def push_in_es(self, tweet):
+            print (tweet)
 
-#            es.create(index="my-index", 
-#                      doc_type="test-type", 
+#            es.create(index="linux-jobs-tweets", 
+#                      doc_type="tweet", 
 #                      body={ "author": status.author.screen_name,
 #                             "date": status.created_at,
 #                             "message": status.text,
-#                             "polarity": tweet.sentiment.polarity,
-#                             "subjectivity": tweet.sentiment.subjectivity }
 #                     )
 
 
@@ -64,7 +61,7 @@ if __name__ == '__main__':
         
         streamer = tweepy.Stream(auth=auth, listener=StreamListener(), timeout=3000000000 )
         # Fill with your own Keywords bellow
-        terms = ['#linux', '#jobs']
+        terms = ['#linux #jobs', 'linux #jobs', 'jobs']
 
         streamer.filter(None,terms)
 
