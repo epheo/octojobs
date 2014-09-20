@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import tweepy
 import sys
 from textwrap import TextWrapper
@@ -33,12 +35,12 @@ class StreamListener(tweepy.StreamListener):
     def push_in_es(self, tweet):
             print (tweet)
 
-#            es.create(index="linux-jobs-tweets", 
-#                      doc_type="tweet", 
-#                      body={ "author": status.author.screen_name,
-#                             "date": status.created_at,
-#                             "message": status.text,
-#                     )
+            es.create(index="linux-jobs-tweets", 
+                      doc_type="tweet", 
+                      body={ "author": status.author.screen_name,
+                             "date": status.created_at,
+                             "message": status.text,
+                     )
 
 
     def on_error(self, status):
