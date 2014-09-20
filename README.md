@@ -3,23 +3,21 @@ octojobs
 
 Find the more Trending Linux Jobs's Specialities
 
-Crawl and analyse 
+Installation
+------------
 
-Descritption
-Page blanche  
+    mv configuration.py.sample configuration.py
 
+Prerequies
+----------
+    sudo pip install tweepy textblob elasticsearch
 
-Prerequ:
-sudo pip install tweepy textblob elasticsearch
+Libraries
+---------
+    * pip install tweepy https://github.com/tweepy/tweepy
 
-Libraries:
+    * pip install elasticsearch https://github.com/elasticsearch/elasticsearch-py
 
-pip install tweepy
-https://github.com/tweepy/tweepy
+    * git clone https://github.com/dockerfile/elasticsearch.git
 
-pip install elasticsearch
-https://github.com/elasticsearch/elasticsearch-py
-
-git clone https://github.com/dockerfile/elasticsearch.git
-
-https://github.com/docker/docker
+    * Docker https://github.com/docker/docker

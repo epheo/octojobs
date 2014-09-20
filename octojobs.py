@@ -8,54 +8,53 @@ from elasticsearch import Elasticsearch
 import json
 
 
-consumer_key="05WXdIClEQleZESrtYBQw"
-consumer_secret="fRShUMDyfgHFdoe4kp3vpqxeGDYg5g6B8vyZiw0OU"
+consumer_key="K5EDWoWu4k9qKyJo8DB7Ll17M"
+consumer_secret="DtLYzFSRI7BueM6Dj6cgSfWaF4xZIVNzgku2ZH5D4KjTGwBm1o"
 
-access_token="2205093792-nnx06lR2jZ64WCDIA68XxLuPwhP7HwnsytIRh0L"
-access_token_secret="3E2JojFK3QCtEuWFm8FTNlSbUR8DU1JXh37DQ0p7Ic82E"
+access_token="2821986487-eV8AA7sQE8EJejsDWNIYWUR2cf6KqbEhLZhwH6O"
+access_token_secret="Xq6BQkAQJdXsGB2ayU1Tf1cD07QUIeDeBC2gcGzfR6xA3"
 
+IGNORE_LIST = ['octojobs', 'hostgatorcodes', 'besthosts']
 
 es = Elasticsearch()
 
 class StreamListener(tweepy.StreamListener):
 
-#    def on_data(self, data):
-#        # Twitter returns data in JSON format - we need to decode it first
-#        decoded = json.loads(data)
-#        print decoded 
-#        # Also, we convert UTF-8 to ASCII ignoring all bad characters sent by users
-#        print '@%s: %s' % (decoded['user']['screen_name'],
-#        decoded['text'].encode('ascii', 'ignore'))
-#        print ''
-#        return True
-
     def on_status(self, status):
-        self.push_in_es(status.text)
+        if status.author.screen_name in IGNORE_LIST:
+            pass
+        else:
+            print (status.text)
+            self.push_in_es(status)
+            self.follow(status.author.screen_name)
+            self.retweet(status.id_str, status.author.screen_name)
 
     def push_in_es(self, tweet):
-            print (tweet)
+        es.create(index="linux-jobs-tweets", 
+                  doc_type="tweet", 
+                  body={ "author": tweet.author.screen_name,
+                         "date": tweet.created_at,
+                         "message": tweet.text}
+                  )
 
-            es.create(index="linux-jobs-tweets", 
-                      doc_type="tweet", 
-                      body={ "author": status.author.screen_name,
-                             "date": status.created_at,
-                             "message": status.text,
-                     )
+    def follow(self, user):
+        try:
+            tweepyapi.create_friendship(user)
+        except Exception, e:
+            pass
 
+    def retweet(self, id_str):
+        tweepyapi.retweet(id_str)
 
     def on_error(self, status):
             print status
 
-#class 
-
-#tweepy.create_friendship(iscreen_n1[, follow])
 
 
 if __name__ == '__main__':
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
-
-        print "Showing all new tweets for #linux #jobs:"
+        tweepyapi = tweepy.API(auth)
 
         # There are different kinds of streams: public stream, user stream, multi-user streams
         # In this example follow #programming tag
@@ -63,7 +62,7 @@ if __name__ == '__main__':
         
         streamer = tweepy.Stream(auth=auth, listener=StreamListener(), timeout=3000000000 )
         # Fill with your own Keywords bellow
-        terms = ['#linux #jobs', 'linux #jobs', 'jobs']
+        terms = ['linux jobs','linux job', 'linux hiring']
 
         streamer.filter(None,terms)
 
