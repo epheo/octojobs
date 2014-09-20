@@ -27,7 +27,7 @@ class StreamListener(tweepy.StreamListener):
             print (status.text)
             self.push_in_es(status)
             self.follow(status.author.screen_name)
-            self.retweet(status.id_str, status.author.screen_name)
+            self.retweet(status.id_str)
 
     def push_in_es(self, tweet):
         es.create(index="linux-jobs-tweets", 
