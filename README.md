@@ -1,7 +1,8 @@
 octojobs
 ========
 
-Find the more Trending Linux Jobs's Specialities on Twitter
+This is the robot @octojobs on Twitter
+https://twitter.com/octojobs
 
 Installation
 ------------

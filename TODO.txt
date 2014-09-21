@@ -4,6 +4,10 @@ Descritption
   Page blanche
 
 TODO:
+	- Favorited all and retweet 1/10 of tweets
+	-  
+
+
   Robot Twitter qui reposte toutes les offres #job #linux de twitter
   Les indexe dans un ElasticSearch
 

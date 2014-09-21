@@ -9,7 +9,6 @@ import json
 
 from configuration import *
 
-es = Elasticsearch()
 
 class StreamListener(tweepy.StreamListener):
 
@@ -48,6 +47,8 @@ if __name__ == '__main__':
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         tweepyapi = tweepy.API(auth)
+
+        es = Elasticsearch()
 
         # There are different kinds of streams: public stream, user stream, multi-user streams
         # In this example follow #programming tag
