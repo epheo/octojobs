@@ -9,13 +9,12 @@ import json
 
 from configuration import *
 
-
 es = Elasticsearch()
 
 class StreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        if status.author.screen_name in settings.IGNORE_LIST:
+        if status.author.screen_name in IGNORE_LIST:
             pass
         else:
             print (status.text)
