@@ -6,10 +6,10 @@ https://twitter.com/octojobs
 
 Installation
 ------------
-    Create configuration
+    # Create configuration
     mv configuration.py.sample configuration.py
 
-    Run ElasticSearch
+    # Run ElasticSearch
     python run_elasticsearch.py
     python octojobs.py
 
