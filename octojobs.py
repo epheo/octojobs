@@ -17,17 +17,26 @@ class StreamListener(tweepy.StreamListener):
             pass
         else:
             print (status.text)
-            self.push_in_es(status)
             self.follow(status.author.screen_name)
-            self.retweet(status.id_str)
+#           self.retweet(status.id_str)
+            self.favorite(status.id_str)
+            self.push_in_es(status)
 
     def push_in_es(self, tweet):
-        es.create(index="linux-jobs-tweets", 
-                  doc_type="tweet", 
-                  body={ "author": tweet.author.screen_name,
-                         "date": tweet.created_at,
-                         "message": tweet.text}
-                  )
+        try:
+            es.create(
+                    index="linux-jobs-tweets", 
+                    doc_type="tweet", 
+                    body={ 
+                        "author": tweet.author.screen_name,
+                        "date": tweet.created_at,
+                        "message": tweet.text
+                        } 
+                    )
+        except Exception, e:                                                                                                                                                                                                              
+            print('No connection to ElasticSearch DB')
+            pass
+
 
     def follow(self, user):
         try:
@@ -37,9 +46,12 @@ class StreamListener(tweepy.StreamListener):
 
     def retweet(self, id_str):
         tweepyapi.retweet(id_str)
+        
+    def favorite(self, id_str):
+        tweepyapi.create_favorite(id_str)
 
     def on_error(self, status):
-            print status
+        print status
 
 
 
@@ -51,7 +63,6 @@ if __name__ == '__main__':
         es = Elasticsearch()
 
         # There are different kinds of streams: public stream, user stream, multi-user streams
-        # In this example follow #programming tag
         # For more details refer to  https://dev.twitter.com/docs/streaming-apis
         
         streamer = tweepy.Stream(auth=auth, listener=StreamListener(), timeout=3000000000 )
@@ -61,5 +72,5 @@ if __name__ == '__main__':
         streamer.filter(None,terms)
 
 
-
+#        print('Let\s crawl Twitter for %s' % terms)
 
